@@ -1,23 +1,17 @@
 
-create or replace function fn_trigger_user_create() returns trigger
-  security definer
-  language plpgsql
-as $$
+create or replace function fn_trigger_user_create() returns trigger as $$
   begin
     perform fn_project_user_create(new.uuid, new.body);
     return new;
   end;
-$$;
+$$ language plpgsql security definer;
 
-create or replace function fn_trigger_user_update() returns trigger
-  security definer
-  language plpgsql
-as $$
+create or replace function fn_trigger_user_update() returns trigger as $$
   begin
     perform fn_project_user_update(new.uuid, new.body);
     return new;
   end;
-$$;
+$$ language plpgsql security definer;
 
 drop trigger if exists event_insert_user_create ON events;
 create trigger event_insert_user_create after insert on events
