@@ -1,20 +1,21 @@
 drop table if exists "users";
 
 CREATE TABLE "users" (
-  "id" serial primary key not null,
-  "uuid" uuid NOT NULL,
-  "name" text NOT NULL,
-  "inserted_at" timestamp(6) NOT NULL DEFAULT 'NOW()',
-  "updated_at" timestamp(6) NOT NULL DEFAULT 'NOW()'
+  "id" 		serial 		primary key 	NOT NULL,
+  "uuid" 	uuid 				NOT NULL,
+  "name" 	text 				NOT NULL,
+  "inserted_at" timestamp(6) 			NOT NULL DEFAULT 'NOW()',
+  "updated_at" 	timestamp(6) 			NOT NULL DEFAULT 'NOW()'
 );
 
 CREATE UNIQUE INDEX "users_uuid_index" ON "users" USING btree(uuid);
 
+WITH result as (
+  insert into events (type, body)
+    values ('user_create', '{"name": "blah"}')
+  returning uuid)
 insert into events (type, uuid, body)
-  values ('user_create', '11111111-1111-1111-1111-111111111111', '{"name": "blah"}');
-
-insert into events (type, uuid, body)
-  values ('user_update', '11111111-1111-1111-1111-111111111111', '{"name": "vtha"}');
+  values ('user_update', result.uuid, '{"name": "vtha"}');
 
 
 -- Retrigger events
